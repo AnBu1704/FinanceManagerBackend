@@ -11,6 +11,6 @@ namespace FinanceManagerBackend.Models
         [MaxLength(30)]
         public string Name { get; set; } = null!;
 
-        public List<Account> Accounts { get; set; }
+        public Account Account { get; set; }
     }
 }

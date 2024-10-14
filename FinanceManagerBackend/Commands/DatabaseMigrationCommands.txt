@@ -9,9 +9,9 @@ Add-Migration InitialCreate
 Update-Database
 
 Remove-Migration
-Update-Database StartEnd
-Add-Migration InitialCreate
-Update-Database InitialCreate
+Update-Database 20241014075547_InitialCreate
+Add-Migration AllowNullUsers
+Update-Database 
 
 
 > Update der Datenbank

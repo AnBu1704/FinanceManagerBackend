@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace FinanceManagerBackend.Models
@@ -14,6 +16,6 @@ namespace FinanceManagerBackend.Models
         public int Color { get; set; }
 
         [JsonIgnore]
-        public User Users { get; set; }
+        public List<User>? Users { get; set; }
     }
 }
