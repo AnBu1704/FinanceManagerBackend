@@ -1,0 +1,26 @@
+> Installieren des EntityFramework
+dotnet tool install --global dotnet-ef
+
+> EntityFramework Version abrufen (falls installiert)
+dotnet ef
+
+> Erstellen des Migrations-Scripts und erstellen der Datenbank
+Add-Migration InitialCreate
+Update-Database
+
+Remove-Migration
+Update-Database StartEnd
+Add-Migration InitialCreate
+Update-Database InitialCreate
+
+
+> Update der Datenbank
+Update-Database
+
+> Erstellen der Entitätsklassen und DbContext-Klasse durch eine bestehende Datenbank
+Scaffold-DbContext "Data Source=DESKTOP-RVUNCD3;Initial Catalog=ToDoDB;User ID=sa;Password=SqlDev;" Microsoft.EntityFrameworkCore.SqlServer -ContextDir Data -OutputDir Models
+
+
+> Erstelle eine SQLite3-Datenbank
+  > Shell-Tools müssen gedownloaded sein und der extrahierte ordner muss bei den Umgebungsvariablen registriert sein.
+sqlite3 meine_datenbank.db
