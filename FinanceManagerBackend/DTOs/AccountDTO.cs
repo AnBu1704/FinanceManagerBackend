@@ -12,8 +12,5 @@ namespace FinanceManagerBackend.Models
         public string Name { get; set; } = null!;
 
         public int Color { get; set; }
-
-        [JsonIgnore]
-        public UserDTO Users { get; set; }
     }
 }
