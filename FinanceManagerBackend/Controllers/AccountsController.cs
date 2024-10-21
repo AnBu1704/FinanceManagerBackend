@@ -41,8 +41,8 @@ namespace FinanceManagerBackend.Controllers
         }
 
         // GET: api/Accounts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Account>> GetAccount(int id)
+        [HttpGet("{id}", Name = "GetAccountInfo")]
+        public async Task<ActionResult<Account>> GetAccountInfo(int id)
         {
             try
             {
@@ -66,9 +66,35 @@ namespace FinanceManagerBackend.Controllers
             }
         }
 
+
+
+        // POST: api/Accounts
+        [HttpPost]
+        public async Task<ActionResult<Account>> AddAccount(AccountDTO accountDto)
+        {
+            try
+            {
+                Account account = new Account()
+                {
+                    Id = accountDto.Id,
+                    Name = accountDto.Name,
+                    Color = accountDto.Color
+                };
+
+                _context.Accounts.Add(account); // Add new account
+                await _context.SaveChangesAsync(); // Save changes to the database
+
+                return CreatedAtAction("GetAccountInfo", new { id = account.Id }, account); // Return 201 with location header
+            }
+            catch (Exception ex)
+            {
+                return Problem("ERROR: " + ex.Message + "\n" + ex.StackTrace); // Log and return error
+            }
+        }
+
         // PUT: api/Accounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccount(int id, Account account)
+        public async Task<IActionResult> EditAccount(int id, Account account)
         {
             try
             {
@@ -98,30 +124,6 @@ namespace FinanceManagerBackend.Controllers
             }
 
             return NoContent(); // Return 204 on success
-        }
-
-        // POST: api/Accounts
-        [HttpPost]
-        public async Task<ActionResult<Account>> PostAccount(AccountDTO accountDto)
-        {
-            try
-            {
-                Account account = new Account()
-                {
-                    Id = accountDto.Id,
-                    Name = accountDto.Name,
-                    Color = accountDto.Color
-                };
-
-                _context.Accounts.Add(account); // Add new account
-                await _context.SaveChangesAsync(); // Save changes to the database
-
-                return CreatedAtAction("GetAccount", new { id = accountDto.Id }, accountDto); // Return 201 with location header
-            }
-            catch (Exception ex)
-            {
-                return Problem("ERROR: " + ex.Message + "\n" + ex.StackTrace); // Log and return error
-            }
         }
 
         // DELETE: api/Accounts/5
