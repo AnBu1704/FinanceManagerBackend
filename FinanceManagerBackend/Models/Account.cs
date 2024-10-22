@@ -8,14 +8,18 @@ namespace FinanceManagerBackend.Models
     public class Account
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; }  // Unique identifier for the Account
 
         [MaxLength(30)]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = null!;  // Name of the Account (max. 30 characters)
 
-        public int Color { get; set; }
+        [MaxLength(200)]
+        public string Description { get; set; }  // Description of the Account (optional, max. 200 characters)
+
+        [MaxLength(256)]
+        public string EMail { get; set; } = null!;  // Email address of the Account (max. 256 characters)
 
         [JsonIgnore]
-        public List<User>? Users { get; set; }
+        public List<User>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
     }
 }

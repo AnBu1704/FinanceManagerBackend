@@ -24,3 +24,4 @@ Scaffold-DbContext "Data Source=DESKTOP-RVUNCD3;Initial Catalog=ToDoDB;User ID=s
 > Erstelle eine SQLite3-Datenbank
   > Shell-Tools müssen gedownloaded sein und der extrahierte ordner muss bei den Umgebungsvariablen registriert sein.
 sqlite3 meine_datenbank.db
+

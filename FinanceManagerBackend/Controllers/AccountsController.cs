@@ -46,12 +46,16 @@ namespace FinanceManagerBackend.Controllers
         {
             try
             {
-                if (_context.Accounts == null)
+                if (_context.Accounts == null && 
+                    _context.Users == null)
                 {
                     return NotFound(); // Return 404 if no accounts exist
                 }
 
                 var account = await _context.Accounts.FindAsync(id); // Find account by ID
+                var users = await _context.Users.Where(x => x.Account.Id == id).ToListAsync();
+
+                Console.WriteLine(users);
 
                 if (account == null)
                 {
@@ -78,7 +82,6 @@ namespace FinanceManagerBackend.Controllers
                 {
                     Id = accountDto.Id,
                     Name = accountDto.Name,
-                    Color = accountDto.Color
                 };
 
                 _context.Accounts.Add(account); // Add new account
