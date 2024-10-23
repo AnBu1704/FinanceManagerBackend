@@ -8,7 +8,7 @@ namespace FinanceManagerBackend.Models
         public int Id { get; set; }  // Unique identifier for the Category
 
         [MaxLength(30)]
-        public string Name { get; set; }  // Name of the Category (max. 30 characters)
+        public string Name { get; set; } = null!;  // Name of the Category (max. 30 characters)
 
         [MaxLength(30)]
         public string Symbol { get; set; }  // Symbol for the Category (optional, max. 30 characters)

@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+﻿using FinanceManagerBackend.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace FinanceManagerBackend.Models
+namespace FinanceManagerBackend.DTOs
 {
-    public class Account
+    public class AccountInfoDTO
     {
         [Key]
         public int Id { get; set; }  // Unique identifier for the Account
@@ -19,7 +17,6 @@ namespace FinanceManagerBackend.Models
         [MaxLength(256)]
         public string EMail { get; set; } = null!;  // Email address of the Account (max. 256 characters)
 
-        [JsonIgnore]
-        public List<User>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
+        public List<UserDTO>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
     }
 }

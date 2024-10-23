@@ -11,7 +11,7 @@ namespace FinanceManagerBackend.Models
         public string Name { get; set; } = null!;  // Name of the Income (max. 30 characters)
 
         [MaxLength(250)]
-        public string Description { get; set; }  // Description of the Income (optional, max. 250 characters)
+        public string Description { get; set; } = string.Empty;  // Description of the Income (optional, max. 250 characters)
 
         public decimal Amount { get; set; } = 0;  // Amount of the Income
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinanceManagerBackend.Data;
 using FinanceManagerBackend.Models;
+using FinanceManagerBackend.DTOs;
 
 namespace FinanceManagerBackend.Controllers
 {
@@ -41,8 +42,8 @@ namespace FinanceManagerBackend.Controllers
         }
 
         // GET: api/Accounts/5
-        [HttpGet("{id}", Name = "GetAccountInfo")]
-        public async Task<ActionResult<Account>> GetAccountInfo(int id)
+        [HttpGet("{id}", Name = "GetAccount")]
+        public async Task<ActionResult<Account>> GetAccount(int id)
         {
             try
             {
@@ -53,9 +54,6 @@ namespace FinanceManagerBackend.Controllers
                 }
 
                 var account = await _context.Accounts.FindAsync(id); // Find account by ID
-                var users = await _context.Users.Where(x => x.Account.Id == id).ToListAsync();
-
-                Console.WriteLine(users);
 
                 if (account == null)
                 {
@@ -70,7 +68,51 @@ namespace FinanceManagerBackend.Controllers
             }
         }
 
+        // GET: api/Accounts/Info/5
+        [HttpGet("Info/{id}", Name = "GetAccountInfo")]
+        public async Task<ActionResult<AccountInfoDTO>> GetAccountInfo(int id)
+        {
+            List<User> users = new List<User>();
 
+            try
+            {
+                if (_context.Accounts == null ||
+                    _context.Users == null)
+                {
+                    return NotFound(); // Return 404 if no accounts exist
+                }
+
+                var accountInfo =
+                    await _context.Accounts
+                                    .Where(a => a.Id == id)
+                                    .Select(a => new AccountInfoDTO()
+                                    {
+                                        Id = a.Id,
+                                        Name = a.Name,
+                                        Description = a.Description,
+                                        EMail = a.EMail,
+                                        Users = a.Users.Select(u => new UserDTO()
+                                        {
+                                            Id = u.Id,
+                                            Name = u.Name,
+                                            Color = u.Color
+                                        }).ToList(),
+                                    }).FirstOrDefaultAsync();
+
+                if (accountInfo != null)
+                {
+                    return accountInfo; // Return found account 
+                }
+                else
+                {
+                    return NotFound(); // Return 404 if account not found
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem("ERROR: " + ex.Message + "\n" + ex.StackTrace); // Log and return error
+            }
+        }
 
         // POST: api/Accounts
         [HttpPost]
@@ -82,12 +124,14 @@ namespace FinanceManagerBackend.Controllers
                 {
                     Id = accountDto.Id,
                     Name = accountDto.Name,
+                    Description = accountDto.Description,
+                    EMail = accountDto.EMail,
                 };
 
                 _context.Accounts.Add(account); // Add new account
                 await _context.SaveChangesAsync(); // Save changes to the database
 
-                return CreatedAtAction("GetAccountInfo", new { id = account.Id }, account); // Return 201 with location header
+                return CreatedAtAction("GetAccount", new { id = account.Id }, account); // Return 201 with location header
             }
             catch (Exception ex)
             {

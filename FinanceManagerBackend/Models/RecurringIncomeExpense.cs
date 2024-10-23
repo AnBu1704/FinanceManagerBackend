@@ -10,7 +10,7 @@ namespace FinanceManagerBackend.Models
         public bool IsExpense { get; set; } = true;  // Indicates if the entry is an Expense (true) or Income (false)
 
         [MaxLength(30)]
-        public string Name { get; set; }  // Name of the Recurring Income/Expense (max. 30 characters)
+        public string Name { get; set; } = null!;  // Name of the Recurring Income/Expense (max. 30 characters)
 
         public decimal Amount { get; set; } = 0; // Amount for the Recurring Income/Expense
 

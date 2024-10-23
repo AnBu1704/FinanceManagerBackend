@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace FinanceManagerBackend.Models
+namespace FinanceManagerBackend.DTOs
 {
     public class UserDTO
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; }  // Unique identifier for the User
 
         [MaxLength(30)]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = null!;  // Name of the User (max. 30 characters)
 
-        public List<AccountDTO> Accounts { get; set; }
+        public int Color { get; set; }  // Color value for the User (e.g., as a hex code)
     }
 }
