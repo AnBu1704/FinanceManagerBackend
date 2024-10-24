@@ -8,6 +8,8 @@ namespace FinanceManagerBackend.DTOs
         [Key]
         public int Id { get; set; }  // Unique identifier for the User
 
+        public int AccountId { get; set; } 
+
         [MaxLength(30)]
         public string Name { get; set; } = null!;  // Name of the User (max. 30 characters)
 
@@ -18,7 +20,5 @@ namespace FinanceManagerBackend.DTOs
         public string UserPassword { get; set; } = string.Empty;  // Password of the User (max. 64 characters)
 
         public int Color { get; set; }  // Color value for the User (e.g., as a hex code)
-
-        public int AccountId { get; set; }
     }
 }

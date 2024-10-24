@@ -10,7 +10,8 @@ namespace FinanceManagerBackend.Models
 
         public int AccountId { get; set; }  // ID of the associated Account
 
-        public Account Account { get; set; }  // Account of the User (Navigation Property)
+        [JsonIgnore]
+        public Account? Account { get; set; }  // Account of the User (Navigation Property)
 
         [MaxLength(30)]
         public string Name { get; set; } = null!;  // Name of the User (max. 30 characters)

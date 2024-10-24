@@ -28,12 +28,12 @@ namespace FinanceManagerBackend.Controllers
         {
             try
             {
-                if (_context.Accounts == null)
+                if (_context.Users == null)
                 {
-                    return NotFound(); // Return 404 if no accounts exist
+                    return NotFound(); // Return 404 if no users exist
                 }
 
-                return await _context.Users.ToListAsync(); // Return all accounts
+                return await _context.Users.ToListAsync(); // Return all users
             }
             catch (Exception ex)
             {
@@ -49,17 +49,17 @@ namespace FinanceManagerBackend.Controllers
             {
                 if (_context.Users == null)
                 {
-                    return NotFound(); // Return 404 if no accounts exist
+                    return NotFound(); // Return 404 if no users exist
                 }
 
-                var user = await _context.Users.FindAsync(id); // Find account by ID
+                var user = await _context.Users.FindAsync(id); // Find user by ID
 
                 if (user == null)
                 {
-                    return NotFound(); // Return 404 if account not found
+                    return NotFound(); // Return 404 if user not found
                 }
 
-                return user; // Return found account
+                return user; // Return found user
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace FinanceManagerBackend.Controllers
                     AccountId = userDTO.AccountId,
                 };
 
-                _context.Users.Add(user); // Add new account
+                _context.Users.Add(user); // Add new user
                 await _context.SaveChangesAsync(); // Save changes to the database
 
                 return CreatedAtAction("GetUser", new { id = user.Id }, user); // Return 201 with location header
@@ -134,16 +134,16 @@ namespace FinanceManagerBackend.Controllers
             {
                 if (_context.Users == null)
                 {
-                    return NotFound(); // Return 404 if no accounts exist
+                    return NotFound(); // Return 404 if no users exist
                 }
 
                 var user = await _context.Users.FindAsync(id); // Find user by ID
                 if (user == null)
                 {
-                    return NotFound(); // Return 404 if account not found
+                    return NotFound(); // Return 404 if user not found
                 }
 
-                _context.Users.Remove(user); // Remove account
+                _context.Users.Remove(user); // Remove user
                 await _context.SaveChangesAsync(); // Save changes to the database
 
                 return NoContent(); // Return 204 on success
