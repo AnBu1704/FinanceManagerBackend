@@ -47,8 +47,7 @@ namespace FinanceManagerBackend.Controllers
         {
             try
             {
-                if (_context.Accounts == null && 
-                    _context.Users == null)
+                if (_context.Accounts == null)
                 {
                     return NotFound(); // Return 404 if no accounts exist
                 }
@@ -95,7 +94,8 @@ namespace FinanceManagerBackend.Controllers
                                         {
                                             Id = u.Id,
                                             Name = u.Name,
-                                            Color = u.Color
+                                            Description = u.Description,
+                                            Color = u.Color,
                                         }).ToList(),
                                     }).FirstOrDefaultAsync();
 

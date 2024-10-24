@@ -15,6 +15,9 @@ namespace FinanceManagerBackend.Models
         [MaxLength(30)]
         public string Name { get; set; } = null!;  // Name of the User (max. 30 characters)
 
+        [MaxLength(200)]
+        public string Description { get; set; } = string.Empty;  // Description of the User (max. 200 characters)
+
         [MaxLength(64)]
         public string UserPassword { get; set; } = string.Empty;  // Password of the User (max. 64 characters)
 
