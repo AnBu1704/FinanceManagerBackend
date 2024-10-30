@@ -90,6 +90,7 @@ namespace FinanceManagerBackend.Controllers
                                         Name = a.Name,
                                         Description = a.Description,
                                         EMail = a.EMail,
+                                        Password = a.Password,
                                         Users = a.Users.Select(u => new UserDTO()
                                         {
                                             Id = u.Id,
@@ -126,6 +127,7 @@ namespace FinanceManagerBackend.Controllers
                     Name = accountDto.Name,
                     Description = accountDto.Description,
                     EMail = accountDto.EMail,
+                    Password = accountDto.Password,
                 };
 
                 _context.Accounts.Add(account); // Add new account

@@ -80,7 +80,6 @@ namespace FinanceManagerBackend.Controllers
                     Name = userDTO.Name,
                     Description = userDTO.Description,
                     Color = userDTO.Color,
-                    UserPassword = userDTO.UserPassword,
                     AccountId = userDTO.AccountId,
                 };
 

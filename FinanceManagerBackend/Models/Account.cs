@@ -19,6 +19,9 @@ namespace FinanceManagerBackend.Models
         [MaxLength(256)]
         public string EMail { get; set; } = null!;  // Email address of the Account (max. 256 characters)
 
+        [MaxLength(64)]
+        public string Password { get; set; } = null!;  // Password of the Account (max. 64 characters)
+
         [JsonIgnore]
         public List<User>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
     }
