@@ -20,6 +20,9 @@ namespace FinanceManagerBackend.DTOs
         [MaxLength(64)]
         public string Password { get; set; } = null!;  // Password of the Account (max. 64 characters)
 
+        [MaxLength(32)]
+        public string Salt { get; set; } = null!;  // Salt of the Password (max. 64 characters)
+
         public List<UserDTO>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
     }
 }

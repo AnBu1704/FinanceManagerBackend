@@ -22,6 +22,9 @@ namespace FinanceManagerBackend.Models
         [MaxLength(64)]
         public string Password { get; set; } = null!;  // Password of the Account (max. 64 characters)
 
+        [MaxLength(32)]
+        public string Salt { get; set; } = null!;  // Salt of the Password (max. 64 characters)
+
         [JsonIgnore]
         public List<User>? Users { get; set; }  // Associated Users of the Account (Navigation Property)
     }

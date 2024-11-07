@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +10,17 @@ using Microsoft.EntityFrameworkCore;
 using FinanceManagerBackend.Data;
 using FinanceManagerBackend.Models;
 using FinanceManagerBackend.DTOs;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace FinanceManagerBackend.Controllers
 {
+    public class LoginRequestData
+    {
+        public string Mail { get; set; } = null!;
+
+        public string Password { get; set; } = null!;
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -91,6 +101,7 @@ namespace FinanceManagerBackend.Controllers
                                         Description = a.Description,
                                         EMail = a.EMail,
                                         Password = a.Password,
+                                        Salt = a.Salt,
                                         Users = a.Users.Select(u => new UserDTO()
                                         {
                                             Id = u.Id,
@@ -128,6 +139,7 @@ namespace FinanceManagerBackend.Controllers
                     Description = accountDto.Description,
                     EMail = accountDto.EMail,
                     Password = accountDto.Password,
+                    Salt = accountDto.Salt,
                 };
 
                 _context.Accounts.Add(account); // Add new account
@@ -200,6 +212,85 @@ namespace FinanceManagerBackend.Controllers
             catch (Exception ex)
             {
                 return Problem("ERROR: " + ex.Message + "\n" + ex.StackTrace); // Log and return error
+            }
+        }
+
+        // POST: api/Accounts/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<AccountInfoDTO>> Login(LoginRequestData data)
+        {
+            try
+            {
+                if (_context.Accounts == null ||
+                    _context.Users == null)
+                {
+                    return NotFound(); // Return 404 if no account or user exist
+                }
+
+                var accountLoginInfo =
+                    await _context.Accounts
+                                    .Where(a => a.EMail == data.Mail)
+                                    .Select(a => new
+                                    {
+                                        Id = a.Id,                                        
+                                        EMail = a.EMail,
+                                        Password = a.Password,
+                                        Salt = a.Salt,
+                                    }).FirstOrDefaultAsync();
+
+                if (accountLoginInfo == null)
+                {  
+                    return NoContent(); 
+                }
+                else
+                {
+                    string storedSalt = accountLoginInfo.Salt; // Lade das gespeicherte Salt aus der DB.
+                    string storedHash = accountLoginInfo.Password; // Lade den gespeicherten Hash.
+
+                    string inputHash = HashPassword(data.Password, storedSalt);
+
+                    if (inputHash == storedHash)
+                    {
+                        var accountInfo = GetAccountInfo(accountLoginInfo.Id).Result.Value;
+
+                        if (accountInfo != null)
+                        {
+                            return accountInfo;
+                        }
+                        else
+                        {
+                            return Problem("ERROR: Error while loading AccountInfo"); // Log concurrency issue
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest(); // Passwort ist falsch.
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem("ERROR: " + ex.Message + "\n" + ex.StackTrace); // Log and return error
+            }
+        }
+
+        public static string GenerateSalt()
+        {
+            byte[] salt = new byte[16];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+            return Convert.ToBase64String(salt);
+        }
+
+        public static string HashPassword(string password, string salt)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var saltedPassword = password + salt;
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
+                return Convert.ToBase64String(hashBytes);
             }
         }
 
