@@ -1,0 +1,5 @@
+﻿> Installieren des EntityFramework
+dotnet tool install --global dotnet-ef
+
+> Selbstsigniertes Zertifikat für die lokale Entwicklung:
+dotnet dev-certs https --trust

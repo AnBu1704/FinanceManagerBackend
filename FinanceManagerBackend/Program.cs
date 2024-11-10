@@ -1,10 +1,26 @@
 using FinanceManagerBackend.Data;
+using FinanceManagerBackend.Services;
 using Microsoft.EntityFrameworkCore;
+
+using static FinanceManagerBackend.Services.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Konfiguriere Kestrel zum Laden des SSL-Zertifikats
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5001, listenOptions =>
+    {
+        listenOptions.UseHttps("localhost.pfx", "dev");
+    });
+});
 
+// Lade SMTP-Einstellungen
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<EmailService>();
+
+
+// Add services to the container.
 builder.Services.AddControllers();
 
 //Connection to SQL Server Database

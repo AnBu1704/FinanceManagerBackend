@@ -18,7 +18,11 @@ namespace FinanceManagerBackend.Data
 
         public DbSet<Income> Incomes { get; set; }
 
+        public DbSet<LoginLocking> LoginLockings { get; set; }
+
         public DbSet<RecurringIncomeExpense> RecurringIncomeExpenses { get; set; }
+
+        public DbSet<ResetPasswordInquiry> ResetPasswordInquiries { get; set; }
 
         public DbSet<User> Users { get; set; }
 
