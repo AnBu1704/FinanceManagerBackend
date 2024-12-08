@@ -23,6 +23,13 @@ namespace FinanceManagerBackend.Controllers
         public string Password { get; set; } = null!;
     }
 
+    public class ForgotPasswordResponse
+    {
+        public int Status { get; set; }
+
+        public string Message { get; set; } = null!;
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -250,30 +257,56 @@ namespace FinanceManagerBackend.Controllers
                 }
                 else
                 {
-                    // Extract stored salt and hash from the database
-                    string storedSalt = accountLoginInfo.Salt;
-                    string storedHash = accountLoginInfo.Password;
+                    DateTime fiveMinutesAgo = DateTime.UtcNow.AddMinutes(-5);
+                    //Check login attempts
+                    var loginAttempts = _context.LoginLockings.Count(ll => ll.AccountId == accountLoginInfo.Id &&
+                                                                            ll.LoginAttempt >= fiveMinutesAgo);
 
-                    // Hash the input password with the stored salt
-                    string inputHash = HashPassword(data.Password, storedSalt);
-
-                    // Validate if the generated hash matches the stored hash
-                    if (inputHash == storedHash)
+                    if (loginAttempts <= 3)
                     {
-                        var accountInfo = GetAccountInfo(accountLoginInfo.Id).Result.Value;
+                        // Extract stored salt and hash from the database
+                        string storedSalt = accountLoginInfo.Salt;
+                        string storedHash = accountLoginInfo.Password;
 
-                        if (accountInfo != null)
+                        // Hash the input password with the stored salt
+                        string inputHash = HashPassword(data.Password, storedSalt);
+
+                        // Validate if the generated hash matches the stored hash
+                        if (inputHash == storedHash)
                         {
-                            return accountInfo; // Return account information if login is successful
+                            var accountInfo = GetAccountInfo(accountLoginInfo.Id).Result.Value;
+
+                            if (accountInfo != null)
+                            {
+                                return accountInfo; // Return account information if login is successful
+                            }
+                            else
+                            {
+                                return Problem("ERROR: Error while loading AccountInfo"); // Log and return a detailed error if account data is missing
+                            }
                         }
                         else
                         {
-                            return Problem("ERROR: Error while loading AccountInfo"); // Log and return a detailed error if account data is missing
+                            // Create a new login locking row with a unique GUID
+                            Guid guid = Guid.NewGuid();
+
+                            LoginLocking loginLocking = new LoginLocking()
+                            {
+                                Guid = guid,
+                                AccountId = accountLoginInfo.Id,
+                                LoginAttempt = DateTime.Now
+                            };
+
+                            // Add the LoginLockings to the database and save changes
+                            _context.LoginLockings.Add(loginLocking);
+                            await _context.SaveChangesAsync();
+
+                            return Unauthorized("Invalid credentials"); // Return 401 for incorrect credentials
                         }
                     }
                     else
                     {
-                        return Unauthorized("Invalid credentials"); // Return 401 for incorrect credentials
+                        return BadRequest("Entered incorrect login information too often");
                     }
                 }
             }
@@ -284,9 +317,10 @@ namespace FinanceManagerBackend.Controllers
             }
         }
 
-        // POST: api/Accounts/Reset-Password/{email}
-        [HttpPost("Reset-Password/{email}")]
-        public async Task<ActionResult<object>> ResetPassword(string email)
+        // andrebutze.mail@googlemail.com
+        // GET: api/Accounts/Forgot-Password/{email}
+        [HttpGet("Forgot-Password/{email}")]
+        public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword(string email)
         {
             try
             {
@@ -310,7 +344,7 @@ namespace FinanceManagerBackend.Controllers
 
                     // Prepare the email content with the reset code
                     var subject = "Password Reset";
-                    var body = new MailTemplates().htmlResetPassword1 + $"{code}" + new MailTemplates().htmlResetPassword2;
+                    var body = new MailTemplates().htmlForgotPassword1 + $"{code}" + new MailTemplates().htmlForgotPassword2;
 
                     // Send the reset email
                     await _emailService.SendEmailAsync(email, subject, body);
@@ -341,7 +375,11 @@ namespace FinanceManagerBackend.Controllers
                         return Problem("ERROR: No row in ResetPasswordInquiries"); // Log if inquiry was not found post-save
                     }
 
-                    return Ok("Reset email has been sent."); // Confirm the reset email was sent
+                    return new ForgotPasswordResponse()
+                    {
+                        Message = "Reset email has been sent.",
+                        Status = 200
+                    };
                 }
             }
             catch (Exception ex)

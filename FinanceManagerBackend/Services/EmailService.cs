@@ -41,21 +41,7 @@ namespace FinanceManagerBackend.Services
                 mailMessage.To.Add(toEmail);
 
                 await client.SendMailAsync(mailMessage);
-            }
-
-            //var mail = "forgot-password@finance-manager.ab.net";
-            //var pw = "dev";
-
-            //var client = new SmtpClient("finance-manager.ab.net", 587)
-            //{
-            //    EnableSsl = true,
-            //    Credentials = new NetworkCredential(mail, pw)
-            //};
-
-            //return client.SendMailAsync(new MailMessage(from: mail,
-            //                                            to: toEmail,
-            //                                            subject,
-            //                                            body));
+            }                                         
         }
     }
 }

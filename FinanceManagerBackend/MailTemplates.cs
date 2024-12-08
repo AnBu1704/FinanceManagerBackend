@@ -2,7 +2,7 @@
 {
     public class MailTemplates
     {
-        public string htmlResetPassword1 { get; set; } = @"
+        public string htmlForgotPassword1 { get; set; } = @"
         <!DOCTYPE html>
         <html lang=""de"">
         <head>
@@ -55,7 +55,7 @@
                 <div class=""code"">";
 
 
-        public string htmlResetPassword2 { get; set; } = @"
+        public string htmlForgotPassword2 { get; set; } = @"
             </p>
                 </div>
                 <div class=""footer"">
